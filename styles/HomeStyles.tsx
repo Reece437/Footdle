@@ -17,10 +17,14 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 8,
     backgroundColor: "white",
-    elevation: 20
+    elevation: 20,
   },
   searchBarDark: {
     backgroundColor: "#424242",
-    color: 'white'
+    color: "white",
+  },
+  playerCard: {
+    width: "85%",
+    height: 50,
   },
 });

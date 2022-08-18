@@ -13,12 +13,13 @@ import React, { useState, useEffect } from "react";
 import { SearchBar } from "../components/HomeComponents";
 
 export default function Home({ navigation }) {
-  const [searchText, setSearchText] = useState("");
+  const [dbData, setDbData] = useState();
+  const [guesses, setGuesses] = useState(1);
   const theme = useColorScheme();
 
   useEffect(() => {
     getDatabaseData();
-  }, [searchText]);
+  }, []);
 
   // Styles
   const darkTheme = theme == "dark" ? styles.containerDark : null;
@@ -31,11 +32,11 @@ export default function Home({ navigation }) {
       .doc("Players")
       .get()
       .then((doc) => {
-        sortPlayerData(doc.data().Players);
+        setDbData(doc.data().Players);
       });
-  }
+  };
 
-  function toTitleCase(str) {
+  export function toTitleCase(str) {
     return str
       .toLowerCase()
       .split(" ")
@@ -45,9 +46,14 @@ export default function Home({ navigation }) {
       .join(" ");
   }
 
-  const sortPlayerData = (doc) => {
+  const sortPlayerData = (searchText) => {
+    let doc = dbData;
     if (searchText.length < 2) {
       return;
+    }
+    let text = searchText;
+    while (text.slice(-1) == " ") {
+      text = text.slice(0, -1);
     }
     let searchedPlayers = [];
     var player;
@@ -55,14 +61,16 @@ export default function Home({ navigation }) {
       player = doc[i].name.toLowerCase();
       try {
         if (
-          player.split(" ")[0].substring(0, searchText.length) == searchText.toLowerCase() ||
-          player.split(" ")[1].substring(0, searchText.length) == searchText.toLowerCase() ||
-          player.substring(0, searchText.length) == searchText.toLowerCase()
+          player.split(" ")[0].substring(0, searchText.length) ==
+            text.toLowerCase() ||
+          player.split(" ")[1].substring(0, searchText.length) ==
+            text.toLowerCase() ||
+          player.substring(0, searchText.length) == text.toLowerCase()
         ) {
           searchedPlayers.push(doc[i]);
         }
       } catch (err) {
-        if (player.substring(0, searchText.length) == searchText) {
+        if (player.substring(0, text.length) == searchText) {
           searchedPlayers.push(doc[i]);
         }
       }
@@ -71,19 +79,27 @@ export default function Home({ navigation }) {
     return searchedPlayers;
   };
 
-  const handleSignOut = () => {
-    auth.signOut().then(() => {
-      navigation.replace("WelcomeScreen");
-    });
+  const SearchArea = () => {
+    const [searchText, setSearchText] = useState("");
+
+    useEffect(() => {
+      sortPlayerData(searchText);
+    }, [searchText]);
+
+    return (
+      <>
+        <SearchBar
+          value={searchText}
+          placeholder={`Guess ${guesses} of 8`}
+          onTextChange={(text) => setSearchText(text)}
+        />
+      </>
+    );
   };
 
   return (
     <View style={[styles.container, darkTheme]}>
-      <SearchBar
-        value={searchText}
-        placeholder={"Search"}
-        onTextChange={(text) => setSearchText(text)}
-      />
+      <SearchArea />
     </View>
   );
 }
