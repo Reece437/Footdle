@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#121212",
   },
   searchBar: {
-    width: "85%",
+    width: 310,
     height: 50,
     fontSize: 16,
     borderRadius: 10,
@@ -24,7 +24,21 @@ export const styles = StyleSheet.create({
     color: "white",
   },
   playerCard: {
-    width: "85%",
+    width: 310,
     height: 50,
+    backgroundColor: 'white',
+    justifyContent: 'center'
   },
+  playerCardDark: {
+  	backgroundColor: '#424242'
+  },
+  clue: {
+  	width: 80,
+  	height: 80,
+  	borderRadius: 50,
+  	elevation: 20,
+  	backgroundColor: 'purple',
+  	alignItems: 'center',
+  	justifyContent: 'center'
+  }
 });

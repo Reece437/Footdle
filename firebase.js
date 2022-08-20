@@ -6,17 +6,20 @@ const firebaseConfig = {
   projectId: "footdle-70671",
   storageBucket: "footdle-70671.appspot.com",
   messagingSenderId: "710001145005",
-  appId: "1:710001145005:web:628fb1aee611dbdd8e4224"
+  appId: "1:710001145005:web:628fb1aee611dbdd8e4224",
 };
-
 
 let app;
 if (firebase.apps.length === 0) {
-	app = firebase.initializeApp(firebaseConfig);
+  app = firebase.initializeApp(firebaseConfig);
 } else {
-	app = firebase.app();
+  app = firebase.app();
 }
-const auth = firebase.auth()
+const auth = firebase.auth();
 const db = firebase.firestore();
 
-export { auth, db }
+db.settings({
+  cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+});
+
+export { auth, db };
