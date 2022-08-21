@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Text,
-  Image
+  Image,
 } from "react-native";
 import { styles } from "../styles/HomeStyles";
 
@@ -34,13 +34,16 @@ export const SearchBar = (props: SearchBarProps) => {
   const placeholderTextColor = theme == "dark" ? "#ffffff96" : null;
 
   return (
-    <TextInput
-      onChangeText={props.onTextChange}
-      style={[styles.searchBar, darkTheme]}
-      placeholder={props.placeholder}
-      placeholderTextColor={placeholderTextColor}
-      value={props.value}
-    />
+    <View style={{ position: "relative", top: "20%" }}>
+      <TextInput
+        onChangeText={props.onTextChange}
+        style={[styles.searchBar, darkTheme]}
+        placeholder={props.placeholder}
+        placeholderTextColor={placeholderTextColor}
+        value={props.value}
+      />
+      {props.children}
+    </View>
   );
 };
 
@@ -52,7 +55,7 @@ interface PlayerCardProps {
 
 export const PlayerCard = (props: PlayerCardProps) => {
   const theme = useColorScheme();
-  const containerStyle = theme == 'dark' ? styles.playerCardDark : null;
+  const containerStyle = theme == "dark" ? styles.playerCardDark : null;
   let { onPress, playerInfo, searchText } = props;
   while (searchText.slice(-1) == " ") {
     searchText = searchText.slice(0, -1);
@@ -60,21 +63,26 @@ export const PlayerCard = (props: PlayerCardProps) => {
   try {
     playerInfo.name.split(searchText.toUpperCase())[1];
   } catch (err) {
-    return <></>;
+    return null;
   }
   let afterSearchText = playerInfo.name
     .split(searchText.toUpperCase())
     .slice(1)
     .join(searchText.toUpperCase());
   let ButtonText = () => (
-    <Text style={{ color: theme == 'dark' ? "white" : null }}>
+    <Text style={{ color: theme == "dark" ? "white" : null }}>
       {playerInfo.name.split(searchText.toUpperCase())[0]}
       <Text style={{ fontWeight: "bold" }}>{searchText.toUpperCase()}</Text>
       {afterSearchText}
     </Text>
   );
   return (
-    <TouchableOpacity style={[styles.playerCard, containerStyle]} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.playerCard, containerStyle]}
+      onPress={() => {
+        onPress(playerInfo);
+      }}
+    >
       <ButtonText />
     </TouchableOpacity>
   );
@@ -103,6 +111,7 @@ export const AllPlayerCards = (props: {
   return (
     <ScrollView
       style={{ flexGrow: 0.5 }}
+      //containerStyle={{position: 'absolute', top: '40%', left: 25}}
       showsVerticalScrollIndicator={true}
       persistentScrollbar={true}
     >
@@ -111,16 +120,83 @@ export const AllPlayerCards = (props: {
   );
 };
 
-const Clue = (props) => {
-	return (
-		<View style={styles.clue}>
-			<Text>Hi</Text>
-		</View>
-	);
-}
+const Clue = ({footdle, playerInfo, category}) => {
+  const theme = useColorScheme();
+  let backgroundColor;
+  switch (category) {
+  	case "NAT":
+  		backgroundColor = footdle.nation == playerInfo ? 'green' : null;
+  		break;
+  	case "LGE":
+  		backgroundColor = footdle.league == playerInfo ? 'green' : null;
+  		break;
+  	case "TEAM":
+  		backgroundColor = footdle.club == playerInfo ? 'green' : null;
+  		break;
+  	case "POS":
+  		backgroundColor = footdle.position == playerInfo ? 'green' : null;
+  		break;
+  	case "AGE":
+  		backgroundColor = getAge(footdle.dob) == playerInfo ? 'green' : null;
+  		break;
+  }
+  
+  if (backgroundColor == null) {
+  	backgroundColor = theme == 'dark' ? '#424242' : 'white';
+  }
+  
+  let extraText;
+  if (category == "AGE") {
+  	let footdleAge = getAge(footdle.dob);
+  	if (footdleAge > playerInfo) {
+  		extraText = '👆'
+  	} else if (footdleAge < playerInfo) {
+  		extraText = '👇'
+  	}
+  }
+  
+  return (
+    <View style={{ flexDirection: "column" }}>
+      <View style={[styles.clue, {backgroundColor: backgroundColor}]}>
+        <Text style={{ fontWeight: "bold", fontSize: 24 }}>
+          {playerInfo}{extraText}
+        </Text>
+      </View>
+      <Text style={{ textAlign: "center", color: "white", fontWeight: "bold" }}>
+        {category}
+      </Text>
+    </View>
+  );
+};
 
 export const GiveClues = (props) => {
   return (
-	<Clue />
-  ); 
+    <View style={{ flexDirection: "row" }}>
+      <Clue
+        footdle={props.footdle}
+        playerInfo={props.playerInfo.nation}
+        category="NAT"
+      />
+      <Clue
+        footdle={props.footdle}
+        playerInfo={props.playerInfo.league}
+        category="LGE"
+      />
+      <Clue
+        footdle={props.footdle}
+        playerInfo={props.playerInfo.club}
+        category="TEAM"
+      />
+      <Clue
+        footdle={props.footdle}
+        playerInfo={props.playerInfo.position}
+        category="POS"
+      />
+      <Clue
+        footdle={props.footdle}
+        playerInfo={getAge(props.playerInfo.dob)}
+        category="AGE"
+      />
+    </View>
+  );
 };

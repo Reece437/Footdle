@@ -28,8 +28,10 @@ export default function Home({ navigation }) {
       .collection("players")
       .doc("Players")
       .onSnapshot((doc) => {
-        console.log("changes: ", doc.data());
         setDbData(doc.data().Players);
+        if (dbData == undefined) {
+        	setFootdle(generateFootdle(doc.data().Players))
+        }
       });
     return unsubscribe;
   }, []);
@@ -46,14 +48,14 @@ export default function Home({ navigation }) {
       });
   };
 
-  const generateFootdle = () => {
-    let doc = dbData;
+  const generateFootdle = (doc) => {
     let player;
     while (true) {
       player = doc[randInt(0, doc.length)];
 
       // Needed for development
       if (player.dob != "") {
+        console.log('Generated footdle: ', player)
         return player;
       }
     }
@@ -107,9 +109,9 @@ export default function Home({ navigation }) {
       setSearchPlayers(sortPlayerData(searchText));
     }, [searchText]);
 
-    const buttonPress = () => {
+    const buttonPress = (playerInfo) => {
       let x = clues;
-      x.push(<GiveClues key={guesses} />);
+      x.unshift(<GiveClues footdle={footdle} playerInfo={playerInfo} key={guesses} />);
       setClues(x);
       setSearchText("");
       setGuesses(guesses + 1);
@@ -121,21 +123,25 @@ export default function Home({ navigation }) {
           value={searchText}
           placeholder={`Guess ${guesses} of 8`}
           onTextChange={(text) => setSearchText(text)}
-        />
-        <AllPlayerCards
-          searchText={searchText}
-          doc={searchPlayers}
-          onPress={buttonPress}
-        />
-        <View style={{flex: 0.1}}>
-          <ScrollView><>{clues}</></ScrollView>
-        </View>
+        >
+          <AllPlayerCards
+            searchText={searchText}
+            doc={searchPlayers}
+            onPress={buttonPress}
+          />
+        </SearchBar>
+        <ScrollView
+          containerStyle={{ flex: 1 }}
+          style={{ flexGrow: 0.5, position: "relative", top: "20%" }}
+        >
+          <View style={{ flexDirection: "column" }}>{clues}</View>
+        </ScrollView>
       </>
     );
   };
 
   return (
-    <View style={[styles.container, darkTheme]}>
+    <View style={[darkTheme, styles.container]}>
       <SearchArea />
     </View>
   );

@@ -6,6 +6,7 @@ db.collection('players').doc("Players").get().then(doc => {
 	console.log(Players.length);
 	for (let i = 0; i < Players.length; i++) {
 		Players[i].name = Players[i].name.toUpperCase()
+		Players[i].position = Players[i].position.toUpperCase()
 	}
 	db.collection('players').doc('Players').set({Players});
 	console.log('Finished');

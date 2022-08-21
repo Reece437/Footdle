@@ -4,12 +4,15 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: 'center'
   },
   containerDark: {
     backgroundColor: "#121212",
   },
   searchBar: {
+    /*position: 'absolute',
+    top: '40%',
+    left: 25,*/
     width: 310,
     height: 50,
     fontSize: 16,
@@ -33,11 +36,12 @@ export const styles = StyleSheet.create({
   	backgroundColor: '#424242'
   },
   clue: {
-  	width: 80,
-  	height: 80,
+  	marginTop: 10,
+  	marginHorizontal: 4,
+  	width: 60,
+  	height: 60,
   	borderRadius: 50,
   	elevation: 20,
-  	backgroundColor: 'purple',
   	alignItems: 'center',
   	justifyContent: 'center'
   }
