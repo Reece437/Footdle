@@ -128,7 +128,14 @@ export default function Home({ navigation }) {
         </SearchBar>
         <ScrollView
           containerStyle={{ flex: 1 }}
-          style={{ flexGrow: 0.5, position: "relative", top: "20%" }}
+          fadingEdgeLength={80}
+          style={{
+            width: "100%",
+            flexGrow: 0.6,
+            marginVertical: 10,
+            position: "relative",
+            top: searchPlayers == undefined ? "25%" : 0,
+          }}
         >
           <View style={{ flexDirection: "column" }}>{clues}</View>
         </ScrollView>

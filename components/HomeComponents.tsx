@@ -36,7 +36,7 @@ export const SearchBar = (props: SearchBarProps) => {
   const placeholderTextColor = theme == "dark" ? "#ffffff96" : null;
 
   return (
-    <View style={{ position: "relative", top: "20%" }}>
+    <View style={{ position: "relative", top: "25%" }}>
       <TextInput
         onChangeText={props.onTextChange}
         style={[styles.searchBar, darkTheme]}
@@ -172,7 +172,14 @@ const Clue = ({ footdle, playerInfo, category }) => {
           {extraText}
         </Text>
       </View>
-      <Text style={{ textAlign: "center", color: "white", fontWeight: "bold" }}>
+      <Text
+        style={{
+          textAlign: "center",
+          color: "white",
+          fontWeight: "bold",
+          fontSize: 16,
+        }}
+      >
         {category}
       </Text>
     </View>
