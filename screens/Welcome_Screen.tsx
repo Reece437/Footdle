@@ -44,6 +44,9 @@ export default function WelcomeScreen({ navigation }) {
           seventh: 0,
           eighth: 0,
           fails: 0,
+          totalGames: 0,
+          streak: 0,
+          bestStreak: 0
         });
       })
       .catch((error) => alert(error.message));

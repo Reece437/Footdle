@@ -8,6 +8,8 @@ import {
   Image,
 } from "react-native";
 import { styles } from "../styles/HomeStyles";
+import { Overlay } from "react-native-elements";
+import { auth, db } from "../firebase";
 
 const getAge = (birthDate) =>
   Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
@@ -120,46 +122,54 @@ export const AllPlayerCards = (props: {
   );
 };
 
-const Clue = ({footdle, playerInfo, category}) => {
+const Clue = ({ footdle, playerInfo, category }) => {
   const theme = useColorScheme();
   let backgroundColor;
   switch (category) {
-  	case "NAT":
-  		backgroundColor = footdle.nation == playerInfo ? 'green' : null;
-  		break;
-  	case "LGE":
-  		backgroundColor = footdle.league == playerInfo ? 'green' : null;
-  		break;
-  	case "TEAM":
-  		backgroundColor = footdle.club == playerInfo ? 'green' : null;
-  		break;
-  	case "POS":
-  		backgroundColor = footdle.position == playerInfo ? 'green' : null;
-  		break;
-  	case "AGE":
-  		backgroundColor = getAge(footdle.dob) == playerInfo ? 'green' : null;
-  		break;
+    case "NAT":
+      backgroundColor = footdle.nation == playerInfo ? "green" : null;
+      break;
+    case "LGE":
+      backgroundColor = footdle.league == playerInfo ? "green" : null;
+      break;
+    case "TEAM":
+      backgroundColor = footdle.club == playerInfo ? "green" : null;
+      break;
+    case "POS":
+      backgroundColor = footdle.position == playerInfo ? "green" : null;
+      break;
+    case "AGE":
+      backgroundColor = getAge(footdle.dob) == playerInfo ? "green" : null;
+      break;
   }
-  
+
   if (backgroundColor == null) {
-  	backgroundColor = theme == 'dark' ? '#424242' : 'white';
+    backgroundColor = theme == "dark" ? "#424242" : "white";
   }
-  
+
   let extraText;
   if (category == "AGE") {
-  	let footdleAge = getAge(footdle.dob);
-  	if (footdleAge > playerInfo) {
-  		extraText = '👆'
-  	} else if (footdleAge < playerInfo) {
-  		extraText = '👇'
-  	}
+    let footdleAge = getAge(footdle.dob);
+    if (footdleAge > playerInfo) {
+      extraText = "👆";
+    } else if (footdleAge < playerInfo) {
+      extraText = "👇";
+    }
   }
-  
+
   return (
     <View style={{ flexDirection: "column" }}>
-      <View style={[styles.clue, {backgroundColor: backgroundColor}]}>
-        <Text style={{ fontWeight: "bold", fontSize: 24 }}>
-          {playerInfo}{extraText}
+      <View style={[styles.clue, { backgroundColor: backgroundColor }]}>
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 24,
+            color: theme == "dark" ? "white" : "black",
+            textAlign: "center",
+          }}
+        >
+          {playerInfo}
+          {extraText}
         </Text>
       </View>
       <Text style={{ textAlign: "center", color: "white", fontWeight: "bold" }}>
@@ -170,33 +180,62 @@ const Clue = ({footdle, playerInfo, category}) => {
 };
 
 export const GiveClues = (props) => {
+  const theme = useColorScheme();
+  const textColor = theme == "dark" ? "white" : "black";
+
   return (
-    <View style={{ flexDirection: "row" }}>
-      <Clue
-        footdle={props.footdle}
-        playerInfo={props.playerInfo.nation}
-        category="NAT"
-      />
-      <Clue
-        footdle={props.footdle}
-        playerInfo={props.playerInfo.league}
-        category="LGE"
-      />
-      <Clue
-        footdle={props.footdle}
-        playerInfo={props.playerInfo.club}
-        category="TEAM"
-      />
-      <Clue
-        footdle={props.footdle}
-        playerInfo={props.playerInfo.position}
-        category="POS"
-      />
-      <Clue
-        footdle={props.footdle}
-        playerInfo={getAge(props.playerInfo.dob)}
-        category="AGE"
-      />
-    </View>
+    <>
+      <Text
+        style={{
+          color: textColor,
+          textAlign: "center",
+          fontSize: 24,
+          fontWeight: "bold",
+        }}
+      >
+        {toTitleCase(props.playerInfo.name)}
+      </Text>
+      <View style={{ flexDirection: "row" }}>
+        <Clue
+          footdle={props.footdle}
+          playerInfo={props.playerInfo.nation}
+          category="NAT"
+        />
+        <Clue
+          footdle={props.footdle}
+          playerInfo={props.playerInfo.league}
+          category="LGE"
+        />
+        <Clue
+          footdle={props.footdle}
+          playerInfo={props.playerInfo.club}
+          category="TEAM"
+        />
+        <Clue
+          footdle={props.footdle}
+          playerInfo={props.playerInfo.position}
+          category="POS"
+        />
+        <Clue
+          footdle={props.footdle}
+          playerInfo={getAge(props.playerInfo.dob)}
+          category="AGE"
+        />
+      </View>
+    </>
+  );
+};
+
+export const Stats = (props) => {
+  const theme = useColorScheme();
+  const darkOverlay = theme == "dark" ? styles.overlayDark : null;
+
+  return (
+    <Overlay
+      overlayStyle={[styles.overlay, darkOverlay]}
+      backdropStyle={{ opacity: 1 }}
+      isVisible={props.visible}
+      onBackdropPress={props.handleBackdropPress}
+    ></Overlay>
   );
 };

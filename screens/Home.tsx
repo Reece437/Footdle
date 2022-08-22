@@ -15,11 +15,14 @@ import {
   SearchBar,
   AllPlayerCards,
   GiveClues,
+  Stats,
 } from "../components/HomeComponents";
+import { Button } from "react-native-elements";
 
 export default function Home({ navigation }) {
   const [dbData, setDbData] = useState();
   const [footdle, setFootdle] = useState();
+  const [visible, setVisible] = useState(false);
 
   const theme = useColorScheme();
 
@@ -30,7 +33,7 @@ export default function Home({ navigation }) {
       .onSnapshot((doc) => {
         setDbData(doc.data().Players);
         if (dbData == undefined) {
-        	setFootdle(generateFootdle(doc.data().Players))
+          setFootdle(generateFootdle(doc.data().Players));
         }
       });
     return unsubscribe;
@@ -39,15 +42,6 @@ export default function Home({ navigation }) {
   // Styles
   const darkTheme = theme == "dark" ? styles.containerDark : null;
 
-  const getDatabaseData = (): void => {
-    db.collection("players")
-      .doc("Players")
-      .get()
-      .then((doc) => {
-        setDbData(doc.data().Players);
-      });
-  };
-
   const generateFootdle = (doc) => {
     let player;
     while (true) {
@@ -55,7 +49,7 @@ export default function Home({ navigation }) {
 
       // Needed for development
       if (player.dob != "") {
-        console.log('Generated footdle: ', player)
+        console.log("Generated footdle: ", player);
         return player;
       }
     }
@@ -111,7 +105,9 @@ export default function Home({ navigation }) {
 
     const buttonPress = (playerInfo) => {
       let x = clues;
-      x.unshift(<GiveClues footdle={footdle} playerInfo={playerInfo} key={guesses} />);
+      x.unshift(
+        <GiveClues footdle={footdle} playerInfo={playerInfo} key={guesses} />
+      );
       setClues(x);
       setSearchText("");
       setGuesses(guesses + 1);
@@ -143,6 +139,14 @@ export default function Home({ navigation }) {
   return (
     <View style={[darkTheme, styles.container]}>
       <SearchArea />
+      <Stats
+        visible={visible}
+        handleBackdropPress={() => {
+          console.log("backdrop pressed");
+          setVisible(!visible);
+          console.log("visible: ", visible);
+        }}
+      />
     </View>
   );
 }
