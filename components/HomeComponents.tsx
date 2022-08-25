@@ -1,11 +1,11 @@
 import {
   View,
   TextInput,
-  useColorScheme,
   TouchableOpacity,
   ScrollView,
   Text,
   Image,
+  useColorScheme,
 } from "react-native";
 import { styles } from "../styles/HomeStyles";
 import { Overlay } from "react-native-elements";
@@ -38,6 +38,7 @@ export const SearchBar = (props: SearchBarProps) => {
   return (
     <View style={{ position: "relative", top: "25%" }}>
       <TextInput
+        editable={editable}
         onChangeText={props.onTextChange}
         style={[styles.searchBar, darkTheme]}
         placeholder={props.placeholder}
@@ -159,7 +160,15 @@ const Clue = ({ footdle, playerInfo, category }) => {
 
   return (
     <View style={{ flexDirection: "column" }}>
-      <View style={[styles.clue, { backgroundColor: backgroundColor }]}>
+      <View
+        style={[
+          styles.clue,
+          {
+            backgroundColor: backgroundColor,
+            marginLeft: category == "NAT" ? 14 : null,
+          },
+        ]}
+      >
         <Text
           style={{
             fontWeight: "bold",
@@ -189,7 +198,6 @@ const Clue = ({ footdle, playerInfo, category }) => {
 export const GiveClues = (props) => {
   const theme = useColorScheme();
   const textColor = theme == "dark" ? "white" : "black";
-
   return (
     <>
       <Text

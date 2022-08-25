@@ -98,6 +98,7 @@ export default function Home({ navigation }) {
     const [searchPlayers, setSearchPlayers] = useState();
     const [clues, setClues] = useState([]);
     const [guesses, setGuesses] = useState(1);
+	const [editable, setEditable] = useState(true);
 
     useEffect(() => {
       setSearchPlayers(sortPlayerData(searchText));
@@ -108,17 +109,55 @@ export default function Home({ navigation }) {
       x.unshift(
         <GiveClues footdle={footdle} playerInfo={playerInfo} key={guesses} />
       );
+      let result = checkGameEnd(footdle, playerInfo, guesses + 1);
+      if (typeof(result) == boolean) {
+      	db.collection('users').doc(auth.user.uid).get().then(doc => {
+      		endGame(result, guesses, doc.data());
+      	})
+      } 
       setClues(x);
       setSearchText("");
       setGuesses(guesses + 1);
     };
-
+    
+    const endGame = (result, guesses, userData) => {
+    	userData.totalGames += 1;
+    	if (result) {
+    		switch (guesses) {
+    			case 1:
+    				userData.first += 1; break;
+    			case 2: 
+    				userData.second += 1; break;
+    			case 3: 
+    				userData.third += 1; break; 
+    			case 4:
+    				userData.fourth += 1; break;
+    			case 5: 
+    				userData.fith += 1; break;
+    			case 6: 
+    				userData.sixth += 1; break;
+    			case 7: 
+    				userData.seventh += 1; break;
+    			case 8:
+    				userData.eighth += 1; break;
+    		}
+    		userData.streak += 1
+    		if (userData.streak > userData.bestStreak) {
+    			userData.bestStreak = userData.streak;
+    		}
+    	} else {
+    		userData.fails += 1,
+    		userData.streak = 0
+    	}
+    }
+    
     return (
       <>
         <SearchBar
           value={searchText}
           placeholder={`Guess ${guesses} of 8`}
           onTextChange={(text) => setSearchText(text)}
+          editable={editable}
         >
           <AllPlayerCards
             searchText={searchText}
@@ -142,7 +181,17 @@ export default function Home({ navigation }) {
       </>
     );
   };
-
+  
+  const checkGameEnd = (footdle: object, playerInfo: object, guesses: number): (boolean | null) => {
+  	if (footdle.name == playerInfo.name) {
+  		return true;
+  	} else if (guesses > 8) {
+  		return false;
+  	} else {
+  		return null;
+  	}
+  }
+  
   return (
     <View style={[darkTheme, styles.container]}>
       <SearchArea />
