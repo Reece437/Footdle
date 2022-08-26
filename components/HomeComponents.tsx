@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   useColorScheme,
+  TouchableHighlight,
 } from "react-native";
 import { styles } from "../styles/HomeStyles";
 import { Overlay } from "react-native-elements";
@@ -21,7 +22,12 @@ function toTitleCase(str) {
     .map(function (word) {
       return word.charAt(0).toUpperCase() + word.slice(1);
     })
-    .join(" ");
+    .join(" ")
+    .split("-")
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join("-");
 }
 
 interface SearchBarProps {
@@ -38,7 +44,7 @@ export const SearchBar = (props: SearchBarProps) => {
   return (
     <View style={{ position: "relative", top: "25%" }}>
       <TextInput
-        editable={editable}
+        editable={props.editable}
         onChangeText={props.onTextChange}
         style={[styles.searchBar, darkTheme]}
         placeholder={props.placeholder}
@@ -251,6 +257,26 @@ export const Stats = (props) => {
       backdropStyle={{ opacity: 1 }}
       isVisible={props.visible}
       onBackdropPress={props.handleBackdropPress}
-    ></Overlay>
+    >
+      <View style={{ width: "85%", height: "85%" }}></View>
+    </Overlay>
+  );
+};
+
+export const PlayAgain = ({ onPress }) => {
+  const theme = useColorScheme();
+  return (
+    <TouchableHighlight underlayColor={'#200efca0'} style={[styles.playAgainBtn, {borderColor: theme == 'dark' ? 'white' : 'black'}]} onPress={onPress}>
+      <Text
+        style={{
+          color: "white",
+          padding: 5,
+          fontSize: 16,
+          fontWeight: "bold",
+        }}
+      >
+        Play Again
+      </Text>
+    </TouchableHighlight>
   );
 };

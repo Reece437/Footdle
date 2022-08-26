@@ -6,6 +6,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   TouchableOpacity,
+  AsyncStorage,
 } from "react-native";
 import { styles } from "../styles/WelcomeScreenStyles";
 import { auth, db } from "../firebase";
@@ -23,6 +24,7 @@ export default function WelcomeScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        AsyncStorage.setItem('signedIn', JSON.stringify(true));
         navigation.replace("Home");
       }
     });
@@ -33,8 +35,8 @@ export default function WelcomeScreen({ navigation }) {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((userCredentials) => {
-    	//userCredentials.user.sendVerificationEmail();
-      	return db.collection("users").doc(userCredentials.user.uid).set({
+        //userCredentials.user.sendVerificationEmail();
+        return db.collection("users").doc(userCredentials.user.uid).set({
           first: 0,
           second: 0,
           third: 0,
@@ -46,7 +48,7 @@ export default function WelcomeScreen({ navigation }) {
           fails: 0,
           totalGames: 0,
           streak: 0,
-          bestStreak: 0
+          bestStreak: 0,
         });
       })
       .catch((error) => alert(error.message));

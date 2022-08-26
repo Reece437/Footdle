@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 50,
-    elevation: 20,
+    elevation: 10,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -55,4 +55,14 @@ export const styles = StyleSheet.create({
     width: "70%",
     height: "80%",
   },
+  playAgainBtn: {
+  	position: 'absolute',
+  	marginTop: 20,
+  	top: 15,
+  	right: 15,
+  	backgroundColor: '#200efc',
+  	borderWidth: 2,
+  	borderColor: 'black',
+  	borderRadius: 20
+  }
 });

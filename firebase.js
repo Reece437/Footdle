@@ -22,4 +22,5 @@ db.settings({
   cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
 });
 
+
 export { auth, db };
