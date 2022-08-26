@@ -7,7 +7,10 @@ import {
   Image,
   useColorScheme,
   TouchableHighlight,
+  Animated,
+  Easing,
 } from "react-native";
+import { useRef, useEffect, useState } from "react";
 import { styles } from "../styles/HomeStyles";
 import { Overlay } from "react-native-elements";
 import { auth, db } from "../firebase";
@@ -129,8 +132,24 @@ export const AllPlayerCards = (props: {
   );
 };
 
-const Clue = ({ footdle, playerInfo, category }) => {
+const Clue = ({ footdle, playerInfo, category, AnimationCallback}) => {
   const theme = useColorScheme();
+  const opacity = useRef(new Animated.Value(0)).current;
+  const offset = useRef(new Animated.Value(50)).current;
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: true,
+    }).start(({finished}) => category == "NAT" ? AnimationCallback() : console.log('nothing'));
+    Animated.timing(offset, {
+      toValue: 0,
+      duration: 1500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   let backgroundColor;
   switch (category) {
     case "NAT":
@@ -166,13 +185,14 @@ const Clue = ({ footdle, playerInfo, category }) => {
 
   return (
     <View style={{ flexDirection: "column" }}>
-      <View
+      <Animated.View
         style={[
           styles.clue,
           {
             backgroundColor: backgroundColor,
             marginLeft: category == "NAT" ? 14 : null,
           },
+          { opacity: opacity, transform: [{ translateY: offset }] },
         ]}
       >
         <Text
@@ -186,9 +206,10 @@ const Clue = ({ footdle, playerInfo, category }) => {
           {playerInfo}
           {extraText}
         </Text>
-      </View>
+      </Animated.View>
       <Text
         style={{
+          marginLeft: category == "NAT" ? 10 : null,
           textAlign: "center",
           color: "white",
           fontWeight: "bold",
@@ -221,6 +242,7 @@ export const GiveClues = (props) => {
           footdle={props.footdle}
           playerInfo={props.playerInfo.nation}
           category="NAT"
+          AnimationCallback={props.AnimationFinishedCallback}
         />
         <Clue
           footdle={props.footdle}
@@ -250,7 +272,16 @@ export const GiveClues = (props) => {
 export const Stats = (props) => {
   const theme = useColorScheme();
   const darkOverlay = theme == "dark" ? styles.overlayDark : null;
-
+  const [data, setData] = useState();
+  
+  useEffect(() => {
+  	db.collection('users').doc(auth.currentUser?.uid).get().then(doc => {
+  		setData(doc.data())
+  	})
+  }, [])
+  
+  
+  
   return (
     <Overlay
       overlayStyle={[styles.overlay, darkOverlay]}
@@ -258,15 +289,28 @@ export const Stats = (props) => {
       isVisible={props.visible}
       onBackdropPress={props.handleBackdropPress}
     >
-      <View style={{ width: "85%", height: "85%" }}></View>
+      <View style={{flexDirection: 'row'}}>
+    	<Text>Total{'\n'}Games: {data?.totalGames}</Text>
+    	<Text>Best streak: {data?.bestStreak}</Text>
+    	<Text>Streak: {data?.streak}</Text>
+      </View>
     </Overlay>
   );
 };
 
+
+
 export const PlayAgain = ({ onPress }) => {
   const theme = useColorScheme();
   return (
-    <TouchableHighlight underlayColor={'#200efca0'} style={[styles.playAgainBtn, {borderColor: theme == 'dark' ? 'white' : 'black'}]} onPress={onPress}>
+    <TouchableHighlight
+      underlayColor={"#200efca0"}
+      style={[
+        styles.playAgainBtn,
+        { borderColor: theme == "dark" ? "white" : "black" },
+      ]}
+      onPress={onPress}
+    >
       <Text
         style={{
           color: "white",

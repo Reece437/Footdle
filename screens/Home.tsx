@@ -24,7 +24,6 @@ import {
 export default function Home({ navigation }) {
   const [dbData, setDbData] = useState();
   const [footdle, setFootdle] = useState();
-  const [visible, setVisible] = useState(false);
 
   const theme = useColorScheme();
 
@@ -101,16 +100,31 @@ export default function Home({ navigation }) {
     const [clues, setClues] = useState([]);
     const [guesses, setGuesses] = useState(1);
     const [editable, setEditable] = useState(true);
+    const [visible, setVisible] = useState(true);
 
     useEffect(() => {
       setSearchPlayers(sortPlayerData(searchText));
     }, [searchText]);
 
     const buttonPress = (playerInfo) => {
+      setEditable(false);
       let x = clues;
       x.unshift(
-        <GiveClues footdle={footdle} playerInfo={playerInfo} key={guesses} />
+        <GiveClues
+          footdle={footdle}
+          playerInfo={playerInfo}
+          key={guesses}
+          AnimationFinishedCallback={() =>
+            AnimationFinishedCallback(playerInfo)
+          }
+        />
       );
+      setClues(x);
+      setSearchText("");
+    };
+
+    const AnimationFinishedCallback = (playerInfo) => {
+      console.log("called function");
       let result = checkGameEnd(footdle, playerInfo, guesses + 1);
       if (typeof result == "boolean") {
         db.collection("users")
@@ -119,9 +133,10 @@ export default function Home({ navigation }) {
           .then((doc) => {
             endGame(result, guesses, doc.data());
           });
-      } else setGuesses(guesses + 1);
-      setClues(x);
-      setSearchText("");
+      } else {
+        setEditable(true);
+        setGuesses(guesses + 1);
+      }
     };
 
     const endGame = (result, guesses, userData) => {
@@ -162,6 +177,7 @@ export default function Home({ navigation }) {
         (userData.fails += 1), (userData.streak = 0);
       }
       db.collection("users").doc(auth.currentUser?.uid).set(userData);
+      setVisible(true);
     };
 
     return (
@@ -178,6 +194,14 @@ export default function Home({ navigation }) {
             onPress={buttonPress}
           />
         </SearchBar>
+        <Stats
+          visible={visible}
+          handleBackdropPress={() => {
+            console.log("backdrop pressed");
+            setVisible(!visible);
+            console.log("visible: ", visible);
+          }}
+        />
         <ScrollView
           containerStyle={{ flex: 1 }}
           fadingEdgeLength={80}
@@ -210,7 +234,7 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={[
         darkTheme,
         styles.container,
@@ -218,20 +242,12 @@ export default function Home({ navigation }) {
       ]}
     >
       <SearchArea />
-      <Stats
-        visible={visible}
-        handleBackdropPress={() => {
-          console.log("backdrop pressed");
-          setVisible(!visible);
-          console.log("visible: ", visible);
-        }}
-      />
-      <PlayAgain onPress={() => console.log('hi')}/>
+      <PlayAgain onPress={() => console.log("hi")} />
       <StatusBar
         barStyle={theme == "dark" ? "light-content" : "dark-content"}
         backgroundColor={"transparent"}
         translucent
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }

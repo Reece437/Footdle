@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#121212",
   },
   searchBar: {
-    width: 310,
+    width: 270,
     height: 50,
     fontSize: 16,
     borderRadius: 10,
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     color: "white",
   },
   playerCard: {
-    width: 310,
+    width: '100%',
     height: 50,
     backgroundColor: "white",
     justifyContent: "center",
@@ -44,9 +44,10 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   overlay: {
-    width: 250,
-    height: 400,
+    width: 300,
+    height: 500,
     backgroundColor: "white",
+    borderRadius: 10
   },
   overlayDark: {
     backgroundColor: "#424242",
