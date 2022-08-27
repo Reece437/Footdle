@@ -55,10 +55,10 @@ export const styles = StyleSheet.create({
   
   playAgainBtn: {
   	position: 'absolute',
-  	marginTop: 25,
+  	marginTop: 30,
   	top: 15,
   	right: 15,
-  	backgroundColor: '#200efc',
+  	backgroundColor: '#2f9db8',
   	borderWidth: 2,
   	borderColor: 'black',
   	borderRadius: 20
@@ -70,5 +70,13 @@ export const styles = StyleSheet.create({
   data: {
   	fontWeight: 'bold',
   	fontSize: 25
+  },
+  guessStatBar: {
+  	height: 25,
+  	backgroundColor: '#2f9db8',
+  	borderTopRightRadius: 10,
+  	borderBottomRightRadius: 10,
+  	marginBottom: 5,
+    justifyContent: 'center'
   }
 });

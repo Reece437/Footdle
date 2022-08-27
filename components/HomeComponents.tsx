@@ -277,38 +277,65 @@ export const Stats = (props) => {
   const textColor = theme == "dark" ? "white" : "black";
 
   const [data, setData] = useState();
-  
+
   const GuessStats = () => {
-  	const widthCalculator = (info) => {
-  		return Math.round((info / data?.totalGames) * 100)
-  	}
-  	
-  	const GuessStat = ({info}) => {
-  		const widthAnimation = useRef(new Animated.Value(0))
-  		const widthValue = widthCalculator(info);
-  		
-  		
-  		useEffect(() => {
-  			Animated.timing(widthAnimation, {
-  				duration: 1500,
-  				toValue: widthValue,
-  				useNativeDriver: true
-  			}).start();
-  		})
-  		
-  		return (
-  			<View>
-  			</View>
-  		)
-  	}
-  	
-  	return (
-  		<View style={{flex: 1, padding: 5}}>
-  		</View>
-  	)
-  }
-  
-  
+    const widthCalculator = (info) => {
+      let x = info / data?.totalGames;
+      if (x < 0.1) x = 0.1
+      return x;
+    };
+
+    const GuessStat = ({ info, num }) => {
+      const widthAnimation = useRef(new Animated.Value(0)).current;
+      const widthValue = widthCalculator(info);
+
+      useEffect(() => {
+        Animated.timing(widthAnimation, {
+          duration: 1500,
+          toValue: widthValue || 0,
+          useNativeDriver: false,
+        }).start();
+      }, []);
+
+      return (
+        <View style={{ flexDirection: "row", flex: 1, maxWidth: 250 }}>
+          <Text style={{ paddingRight: 5, color: textColor, marginTop: 3 }}>
+            {num}
+          </Text>
+          <Animated.View
+            style={[
+              styles.guessStatBar,
+              {
+                width: widthAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ["0%", "100%"],
+                }),
+              },
+            ]}
+          >
+            <Text style={{ color: textColor, textAlign: "center" }}>
+              {info}
+            </Text>
+          </Animated.View>
+        </View>
+      );
+    };
+
+    return (
+      <View style={{ flex: 1, padding: 5 }}>
+        <GuessStat num="1" info={data?.first} />
+        <GuessStat num="2" info={data?.second} />
+        <GuessStat num="3" info={data?.third} />
+        <GuessStat num="4" info={data?.fourth} />
+        <GuessStat num="5" info={data?.fith} />
+        <GuessStat num="6" info={data?.sixth} />
+        <GuessStat num="7" info={data?.seventh} />
+        <GuessStat num="8" info={data?.eighth} />
+        <GuessStat num="x" info={data?.fails} />
+      </View>
+    );
+  };
+
   useEffect(() => {
     const unsubscribe = db
       .collection("users")
@@ -361,25 +388,31 @@ export const Stats = (props) => {
             fontSize: 20,
             fontWeight: "bold",
             textDecorationLine: "underline",
-            paddingBottom: 10
+            paddingBottom: 10,
           },
         ]}
       >
         Guess Stats
       </Text>
-      <View style={{ backgroundColor: "white", height: "75%" }}>
-    	<GuessStats />
+      <View
+        style={{
+          borderWidth: 2,
+          borderColor: textColor,
+          borderRadius: 10,
+          height: "60%",
+        }}
+      >
+        <GuessStats />
       </View>
     </Overlay>
   );
 };
 
-
 export const PlayAgain = ({ onPress }) => {
   const theme = useColorScheme();
   return (
     <TouchableHighlight
-      underlayColor={"#200efca0"}
+      underlayColor={"#2f9db898"}
       style={[
         styles.playAgainBtn,
         { borderColor: theme == "dark" ? "white" : "black" },
