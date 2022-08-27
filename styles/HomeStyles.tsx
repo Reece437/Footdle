@@ -52,18 +52,23 @@ export const styles = StyleSheet.create({
   overlayDark: {
     backgroundColor: "#424242",
   },
-  statsContainer: {
-    width: "70%",
-    height: "80%",
-  },
+  
   playAgainBtn: {
   	position: 'absolute',
-  	marginTop: 20,
+  	marginTop: 25,
   	top: 15,
   	right: 15,
   	backgroundColor: '#200efc',
   	borderWidth: 2,
   	borderColor: 'black',
   	borderRadius: 20
+  },
+  statsText: {
+  	paddingHorizontal: 5,
+  	textAlign: 'center'
+  },
+  data: {
+  	fontWeight: 'bold',
+  	fontSize: 25
   }
 });

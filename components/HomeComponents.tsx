@@ -132,7 +132,7 @@ export const AllPlayerCards = (props: {
   );
 };
 
-const Clue = ({ footdle, playerInfo, category, AnimationCallback}) => {
+const Clue = ({ footdle, playerInfo, category, AnimationCallback }) => {
   const theme = useColorScheme();
   const opacity = useRef(new Animated.Value(0)).current;
   const offset = useRef(new Animated.Value(50)).current;
@@ -142,7 +142,9 @@ const Clue = ({ footdle, playerInfo, category, AnimationCallback}) => {
       toValue: 1,
       duration: 2000,
       useNativeDriver: true,
-    }).start(({finished}) => category == "NAT" ? AnimationCallback() : console.log('nothing'));
+    }).start(({ finished }) =>
+      category == "NAT" ? AnimationCallback() : console.log("nothing")
+    );
     Animated.timing(offset, {
       toValue: 0,
       duration: 1500,
@@ -272,16 +274,51 @@ export const GiveClues = (props) => {
 export const Stats = (props) => {
   const theme = useColorScheme();
   const darkOverlay = theme == "dark" ? styles.overlayDark : null;
+  const textColor = theme == "dark" ? "white" : "black";
+
   const [data, setData] = useState();
   
+  const GuessStats = () => {
+  	const widthCalculator = (info) => {
+  		return Math.round((info / data?.totalGames) * 100)
+  	}
+  	
+  	const GuessStat = ({info}) => {
+  		const widthAnimation = useRef(new Animated.Value(0))
+  		const widthValue = widthCalculator(info);
+  		
+  		
+  		useEffect(() => {
+  			Animated.timing(widthAnimation, {
+  				duration: 1500,
+  				toValue: widthValue,
+  				useNativeDriver: true
+  			}).start();
+  		})
+  		
+  		return (
+  			<View>
+  			</View>
+  		)
+  	}
+  	
+  	return (
+  		<View style={{flex: 1, padding: 5}}>
+  		</View>
+  	)
+  }
+  
+  
   useEffect(() => {
-  	db.collection('users').doc(auth.currentUser?.uid).get().then(doc => {
-  		setData(doc.data())
-  	})
-  }, [])
-  
-  
-  
+    const unsubscribe = db
+      .collection("users")
+      .doc(auth.currentUser?.uid)
+      .onSnapshot((doc) => {
+        setData(doc.data());
+      });
+    return unsubscribe;
+  }, []);
+
   return (
     <Overlay
       overlayStyle={[styles.overlay, darkOverlay]}
@@ -289,15 +326,53 @@ export const Stats = (props) => {
       isVisible={props.visible}
       onBackdropPress={props.handleBackdropPress}
     >
-      <View style={{flexDirection: 'row'}}>
-    	<Text>Total{'\n'}Games: {data?.totalGames}</Text>
-    	<Text>Best streak: {data?.bestStreak}</Text>
-    	<Text>Streak: {data?.streak}</Text>
+      <Text
+        style={[
+          styles.statsText,
+          {
+            color: textColor,
+            fontSize: 20,
+            fontWeight: "bold",
+            textDecorationLine: "underline",
+          },
+        ]}
+      >
+        Stats
+      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "center", flex: 1 }}>
+        <Text style={[styles.statsText, { color: textColor }]}>
+          <Text style={styles.data}>{data?.totalGames}</Text>
+          {"\n"}Total Games
+        </Text>
+        <Text style={[styles.statsText, { color: textColor }]}>
+          <Text style={styles.data}>{data?.bestStreak}</Text>
+          {"\n"}Best streak
+        </Text>
+        <Text style={[styles.statsText, { color: textColor }]}>
+          <Text style={styles.data}>{data?.streak}</Text>
+          {"\n"}Current streak
+        </Text>
+      </View>
+      <Text
+        style={[
+          styles.statsText,
+          {
+            color: textColor,
+            fontSize: 20,
+            fontWeight: "bold",
+            textDecorationLine: "underline",
+            paddingBottom: 10
+          },
+        ]}
+      >
+        Guess Stats
+      </Text>
+      <View style={{ backgroundColor: "white", height: "75%" }}>
+    	<GuessStats />
       </View>
     </Overlay>
   );
 };
-
 
 
 export const PlayAgain = ({ onPress }) => {
