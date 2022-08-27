@@ -24,7 +24,15 @@ import {
 export default function Home({ navigation }) {
   const [dbData, setDbData] = useState();
   const [footdle, setFootdle] = useState();
-
+  const [searchText, setSearchText] = useState("");
+  const [searchPlayers, setSearchPlayers] = useState();
+  const [clues, setClues] = useState([]);
+  const [guesses, setGuesses] = useState(1);
+  const [editable, setEditable] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [playAgain, setPlayAgain] = useState(false);
+  
+  
   const theme = useColorScheme();
 
   useEffect(() => {
@@ -39,6 +47,10 @@ export default function Home({ navigation }) {
       });
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    setSearchPlayers(sortPlayerData(searchText));
+  }, [searchText, dbData]);
 
   // Styles
   const darkTheme = theme == "dark" ? styles.containerDark : null;
@@ -94,129 +106,77 @@ export default function Home({ navigation }) {
     return searchedPlayers;
   };
 
-  const SearchArea = () => {
-    const [searchText, setSearchText] = useState("");
-    const [searchPlayers, setSearchPlayers] = useState();
-    const [clues, setClues] = useState([]);
-    const [guesses, setGuesses] = useState(1);
-    const [editable, setEditable] = useState(true);
-    const [visible, setVisible] = useState(true);
-
-    useEffect(() => {
-      setSearchPlayers(sortPlayerData(searchText));
-    }, [searchText]);
-
-    const buttonPress = (playerInfo) => {
-      setEditable(false);
-      let x = clues;
-      x.unshift(
-        <GiveClues
-          footdle={footdle}
-          playerInfo={playerInfo}
-          key={guesses}
-          AnimationFinishedCallback={() =>
-            AnimationFinishedCallback(playerInfo)
-          }
-        />
-      );
-      setClues(x);
-      setSearchText("");
-    };
-
-    const AnimationFinishedCallback = (playerInfo) => {
-      console.log("called function");
-      let result = checkGameEnd(footdle, playerInfo, guesses + 1);
-      if (typeof result == "boolean") {
-        db.collection("users")
-          .doc(auth.currentUser?.uid)
-          .get()
-          .then((doc) => {
-            endGame(result, guesses, doc.data());
-          });
-      } else {
-        setEditable(true);
-        setGuesses(guesses + 1);
-      }
-    };
-
-    const endGame = (result, guesses, userData) => {
-      setEditable(false);
-      userData.totalGames += 1;
-      if (result) {
-        switch (guesses) {
-          case 1:
-            userData.first += 1;
-            break;
-          case 2:
-            userData.second += 1;
-            break;
-          case 3:
-            userData.third += 1;
-            break;
-          case 4:
-            userData.fourth += 1;
-            break;
-          case 5:
-            userData.fith += 1;
-            break;
-          case 6:
-            userData.sixth += 1;
-            break;
-          case 7:
-            userData.seventh += 1;
-            break;
-          case 8:
-            userData.eighth += 1;
-            break;
-        }
-        userData.streak += 1;
-        if (userData.streak > userData.bestStreak) {
-          userData.bestStreak = userData.streak;
-        }
-      } else {
-        (userData.fails += 1), (userData.streak = 0);
-      }
-      db.collection("users").doc(auth.currentUser?.uid).set(userData);
-      setVisible(true);
-    };
-
-    return (
-      <>
-        <SearchBar
-          value={searchText}
-          placeholder={`Guess ${guesses} of 8`}
-          onTextChange={(text) => setSearchText(text)}
-          editable={editable}
-        >
-          <AllPlayerCards
-            searchText={searchText}
-            doc={searchPlayers}
-            onPress={buttonPress}
-          />
-        </SearchBar>
-        <Stats
-          visible={visible}
-          handleBackdropPress={() => {
-            console.log("backdrop pressed");
-            setVisible(!visible);
-            console.log("visible: ", visible);
-          }}
-        />
-        <ScrollView
-          containerStyle={{ flex: 1 }}
-          fadingEdgeLength={80}
-          style={{
-            width: "100%",
-            flexGrow: 0.6,
-            marginVertical: 10,
-            position: "relative",
-            top: searchPlayers == undefined ? "25%" : 0,
-          }}
-        >
-          <View style={{ flexDirection: "column" }}>{clues}</View>
-        </ScrollView>
-      </>
+  const buttonPress = (playerInfo) => {
+    setEditable(false);
+    let x = clues;
+    x.unshift(
+      <GiveClues
+        footdle={footdle}
+        playerInfo={playerInfo}
+        key={guesses}
+        AnimationFinishedCallback={() => AnimationFinishedCallback(playerInfo)}
+      />
     );
+    setClues(x);
+    setSearchText("");
+  };
+
+  const AnimationFinishedCallback = (playerInfo) => {
+    console.log("called function");
+    let result = checkGameEnd(footdle, playerInfo, guesses + 1);
+    if (typeof result == "boolean") {
+      db.collection("users")
+        .doc(auth.currentUser?.uid)
+        .get()
+        .then((doc) => {
+          endGame(result, guesses, doc.data());
+        });
+    } else {
+      setEditable(true);
+      setGuesses(guesses + 1);
+    }
+  };
+
+  const endGame = (result, guesses, userData) => {
+    setEditable(false);
+    userData.totalGames += 1;
+    if (result) {
+      switch (guesses) {
+        case 1:
+          userData.first += 1;
+          break;
+        case 2:
+          userData.second += 1;
+          break;
+        case 3:
+          userData.third += 1;
+          break;
+        case 4:
+          userData.fourth += 1;
+          break;
+        case 5:
+          userData.fith += 1;
+          break;
+        case 6:
+          userData.sixth += 1;
+          break;
+        case 7:
+          userData.seventh += 1;
+          break;
+        case 8:
+          userData.eighth += 1;
+          break;
+      }
+      userData.streak += 1;
+      if (userData.streak > userData.bestStreak) {
+        userData.bestStreak = userData.streak;
+      }
+    } else {
+      (userData.fails += 1), (userData.streak = 0);
+    }
+    db.collection("users").doc(auth.currentUser?.uid).set(userData);
+    setPlayAgain(true);
+    setVisible(true);
   };
 
   const checkGameEnd = (
@@ -233,6 +193,17 @@ export default function Home({ navigation }) {
     }
   };
 
+  const restartGame = () => {
+    setFootdle(generateFootdle(dbData));
+    setSearchText("");
+    setGuesses(1);
+    setVisible(false);
+    setClues([]);
+    setEditable(true);
+    setSearchPlayers();
+    setPlayAgain(false);
+  };
+
   return (
     <KeyboardAvoidingView
       style={[
@@ -241,8 +212,44 @@ export default function Home({ navigation }) {
         { paddingTop: StatusBar.currentHeight },
       ]}
     >
-      <SearchArea />
-      <PlayAgain onPress={() => console.log("hi")} />
+      <SearchBar
+        value={searchText}
+        placeholder={`Guess ${guesses} of 8`}
+        onTextChange={(text) => setSearchText(text)}
+        editable={editable}
+      >
+        <AllPlayerCards
+          searchText={searchText}
+          doc={searchPlayers}
+          onPress={buttonPress}
+        />
+      </SearchBar>
+      <ScrollView
+        containerStyle={{ flex: 1 }}
+        fadingEdgeLength={80}
+        style={{
+          width: "100%",
+          flexGrow: 0.6,
+          marginVertical: 10,
+          position: "relative",
+          top: searchPlayers == undefined ? "25%" : "-5%",
+        }}
+      >
+        <View style={{ flexDirection: "column" }}>{clues}</View>
+      </ScrollView>
+      {playAgain ? <PlayAgain
+        onPress={restartGame}
+        style={{ position: "absolute", marginTop: 30, top: 15, right: 15 }}
+      /> : null}
+      <Stats
+        visible={visible}
+        handleBackdropPress={() => {
+          console.log("backdrop pressed");
+          setVisible(!visible);
+          console.log("visible: ", visible);
+        }}
+        playAgain={restartGame}
+      />
       <StatusBar
         barStyle={theme == "dark" ? "light-content" : "dark-content"}
         backgroundColor={"transparent"}

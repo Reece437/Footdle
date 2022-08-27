@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     color: "white",
   },
   playerCard: {
-    width: '100%',
+    width: 270,
     height: 50,
     backgroundColor: "white",
     justifyContent: "center",
@@ -54,10 +54,6 @@ export const styles = StyleSheet.create({
   },
   
   playAgainBtn: {
-  	position: 'absolute',
-  	marginTop: 30,
-  	top: 15,
-  	right: 15,
   	backgroundColor: '#2f9db8',
   	borderWidth: 2,
   	borderColor: 'black',

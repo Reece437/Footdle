@@ -45,7 +45,12 @@ export const SearchBar = (props: SearchBarProps) => {
   const placeholderTextColor = theme == "dark" ? "#ffffff96" : null;
 
   return (
-    <View style={{ position: "relative", top: "25%" }}>
+    <View
+      style={{
+        position: "relative",
+        top: "25%",
+        }}
+    >
       <TextInput
         editable={props.editable}
         onChangeText={props.onTextChange}
@@ -126,6 +131,7 @@ export const AllPlayerCards = (props: {
       //containerStyle={{position: 'absolute', top: '40%', left: 25}}
       showsVerticalScrollIndicator={true}
       persistentScrollbar={true}
+      keyboardShouldPersistTaps='handled'
     >
       {cards}
     </ScrollView>
@@ -281,7 +287,7 @@ export const Stats = (props) => {
   const GuessStats = () => {
     const widthCalculator = (info) => {
       let x = info / data?.totalGames;
-      if (x < 0.1) x = 0.1
+      if (x < 0.1) x = 0.1;
       return x;
     };
 
@@ -404,28 +410,41 @@ export const Stats = (props) => {
       >
         <GuessStats />
       </View>
+      <View style={{ alignItems: "center" }}>
+        <PlayAgain
+          style={{ width: "100%", height: 50, borderRadius: 10, marginTop: 20 }}
+          textStyle={{ fontSize: 26, textAlign: "center" }}
+          onPress={props.playAgain}
+        />
+      </View>
     </Overlay>
   );
 };
 
-export const PlayAgain = ({ onPress }) => {
+export const PlayAgain = ({ onPress, style, textStyle }) => {
   const theme = useColorScheme();
   return (
     <TouchableHighlight
       underlayColor={"#2f9db898"}
       style={[
         styles.playAgainBtn,
-        { borderColor: theme == "dark" ? "white" : "black" },
+        {
+          borderColor: theme == "dark" ? "white" : "black",
+        },
+        style,
       ]}
       onPress={onPress}
     >
       <Text
-        style={{
-          color: "white",
-          padding: 5,
-          fontSize: 16,
-          fontWeight: "bold",
-        }}
+        style={[
+          {
+            color: "white",
+            padding: 5,
+            fontSize: 16,
+            fontWeight: "bold",
+          },
+          textStyle,
+        ]}
       >
         Play Again
       </Text>
