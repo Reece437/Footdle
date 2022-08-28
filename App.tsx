@@ -1,16 +1,18 @@
+import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import WelcomeScreen from "./screens/Welcome_Screen";
-import Home from "./screens/Home";
+import { createStackNavigator } from "@react-navigation/stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Home from "./screens/Home.tsx";
+import WelcomeScreen from "./screens/Welcome_Screen.tsx";
 import { TailwindProvider } from "tailwindcss-react-native";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer initialRouteName="WelcomeScreen">
       <TailwindProvider>
-        <Stack.Navigator initialRouteName="WelcomeScreen">
+        <Stack.Navigator>
           <Stack.Screen
             component={WelcomeScreen}
             name="WelcomeScreen"

@@ -6,10 +6,11 @@ import {
   TextInput,
   KeyboardAvoidingView,
   TouchableOpacity,
-  AsyncStorage,
 } from "react-native";
 import { styles } from "../styles/WelcomeScreenStyles";
 import { auth, db } from "../firebase";
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 
 export default function WelcomeScreen({ navigation }) {
   const [email, setEmail] = useState("");

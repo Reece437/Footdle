@@ -10,7 +10,7 @@ import {
   ScrollView,
   StatusBar,
 } from "react-native";
-import { auth, db } from "../firebase";
+import { auth, db } from "../firebase.js";
 import { styles } from "../styles/HomeStyles";
 import React, { useState, useEffect } from "react";
 import {
