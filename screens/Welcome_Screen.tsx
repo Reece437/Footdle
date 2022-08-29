@@ -6,6 +6,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { styles } from "../styles/WelcomeScreenStyles";
 import { auth, db } from "../firebase";
@@ -99,6 +100,11 @@ export default function WelcomeScreen({ navigation }) {
           Register
         </Text>
       </TouchableOpacity>
+      <StatusBar
+        barStyle={theme == "dark" ? "light-content" : "dark-content"}
+        backgroundColor={"transparent"}
+        translucent
+      />
     </KeyboardAvoidingView>
   );
 }

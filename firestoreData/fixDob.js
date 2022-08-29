@@ -14,7 +14,7 @@ db.collection("players")
     let Players = doc.data().Players;
     for (let i = 0; i < Players.length; i++) {
       if (Players[i].dob == "") {
-        Players[i].dob = input(`Enter ${Players[i].name}'s dob`);
+        Players[i].dob = input(`Enter ${JSON.stringify(Players[i])}'s dob`);
         console.log(Players[i]);
         await db.collection("players").doc("Players").set({ Players });
         console.log("Saved data");

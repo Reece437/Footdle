@@ -1,24 +1,24 @@
 import {
   Text,
   View,
-  SafeAreaView,
   TouchableOpacity,
   useColorScheme,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   TextInput,
   ScrollView,
   StatusBar,
+  Animated,
 } from "react-native";
 import { auth, db } from "../firebase.js";
 import { styles } from "../styles/HomeStyles";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   SearchBar,
   AllPlayerCards,
   GiveClues,
-  Stats,
   PlayAgain,
+  Stats,
+  FootdleText
 } from "../components/HomeComponents";
 
 export default function Home({ navigation }) {
@@ -31,10 +31,16 @@ export default function Home({ navigation }) {
   const [editable, setEditable] = useState(true);
   const [visible, setVisible] = useState(false);
   const [playAgain, setPlayAgain] = useState(false);
-  
-  
-  const theme = useColorScheme();
 
+  //const AnimatedStats = Animated.createAnimatedComponent(Stats);
+  const overlayAnimation = useRef(new Animated.Value(0.5)).current;
+
+  const theme = useColorScheme();
+  
+  useEffect(() => {
+  	playAgain ? setTimeout(() => setVisible(true), 1000) : null;
+  }, [playAgain])
+  
   useEffect(() => {
     const unsubscribe = db
       .collection("players")
@@ -176,7 +182,6 @@ export default function Home({ navigation }) {
     }
     db.collection("users").doc(auth.currentUser?.uid).set(userData);
     setPlayAgain(true);
-    setVisible(true);
   };
 
   const checkGameEnd = (
@@ -202,6 +207,7 @@ export default function Home({ navigation }) {
     setEditable(true);
     setSearchPlayers();
     setPlayAgain(false);
+    overlayAnimation.value = new Animated.Value(0);
   };
 
   return (
@@ -212,6 +218,7 @@ export default function Home({ navigation }) {
         { paddingTop: StatusBar.currentHeight },
       ]}
     >
+      {playAgain ? <FootdleText footdle={footdle} /> : null}
       <SearchBar
         value={searchText}
         placeholder={`Guess ${guesses} of 8`}
@@ -237,10 +244,12 @@ export default function Home({ navigation }) {
       >
         <View style={{ flexDirection: "column" }}>{clues}</View>
       </ScrollView>
-      {playAgain ? <PlayAgain
-        onPress={restartGame}
-        style={{ position: "absolute", marginTop: 30, top: 15, right: 15 }}
-      /> : null}
+      {playAgain ? (
+        <PlayAgain
+          onPress={restartGame}
+          style={{ position: "absolute", marginTop: 30, top: 15, right: 15 }}
+        />
+      ) : null}
       <Stats
         visible={visible}
         handleBackdropPress={() => {

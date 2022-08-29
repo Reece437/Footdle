@@ -9,10 +9,23 @@ const input = text => {
 	return x;
 }
 
+const checkName = (name, Players) => {
+	for (let i = 0; i < Players.length; i++) {
+		if (name == Players[i].name) {
+			console.log("This player already exists as:\n", Players[i]);
+			return false;
+		}
+	}
+	return true;
+}
+
 db.collection('players').doc('Players').get().then(async(doc) => {
 	let Players = doc.data().Players;
 	while (true) {
-		var name = input('Enter the player name').toUpperCase();
+		while (true) {
+			var name = input('Enter the player name').toUpperCase();
+			if (checkName(name, Players)) break;
+		}
 		var league = input("Enter the player league").toLowerCase();
 		var club = input("Enter the player club").toLowerCase();
 		var nation = input("Enter the player nation").toLowerCase();

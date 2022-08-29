@@ -10,10 +10,12 @@ import {
   Animated,
   Easing,
 } from "react-native";
-import { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { styles } from "../styles/HomeStyles";
 import { Overlay } from "react-native-elements";
 import { auth, db } from "../firebase";
+
+//const AnimatedOverlay = Animated.createAnimatedComponent(Overlay);
 
 const getAge = (birthDate) =>
   Math.floor((new Date() - new Date(birthDate).getTime()) / 3.15576e10);
@@ -49,7 +51,7 @@ export const SearchBar = (props: SearchBarProps) => {
       style={{
         position: "relative",
         top: "25%",
-        }}
+      }}
     >
       <TextInput
         editable={props.editable}
@@ -131,7 +133,7 @@ export const AllPlayerCards = (props: {
       //containerStyle={{position: 'absolute', top: '40%', left: 25}}
       showsVerticalScrollIndicator={true}
       persistentScrollbar={true}
-      keyboardShouldPersistTaps='handled'
+      keyboardShouldPersistTaps="handled"
     >
       {cards}
     </ScrollView>
@@ -276,13 +278,21 @@ export const GiveClues = (props) => {
     </>
   );
 };
-
 export const Stats = (props) => {
   const theme = useColorScheme();
   const darkOverlay = theme == "dark" ? styles.overlayDark : null;
   const textColor = theme == "dark" ? "white" : "black";
 
   const [data, setData] = useState();
+
+  const overlayAnimation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(overlayAnimation, {
+      useNativeDriver: true,
+      toValue: 1,
+    }).start();
+  }, []);
 
   const GuessStats = () => {
     const widthCalculator = (info) => {
@@ -412,7 +422,12 @@ export const Stats = (props) => {
       </View>
       <View style={{ alignItems: "center" }}>
         <PlayAgain
-          style={{ width: "100%", height: 50, borderRadius: 10, marginTop: 20 }}
+          style={{
+            width: "100%",
+            height: 50,
+            borderRadius: 10,
+            marginTop: 20,
+          }}
           textStyle={{ fontSize: 26, textAlign: "center" }}
           onPress={props.playAgain}
         />
@@ -449,5 +464,33 @@ export const PlayAgain = ({ onPress, style, textStyle }) => {
         Play Again
       </Text>
     </TouchableHighlight>
+  );
+};
+
+export const FootdleText = ({footdle}) => {
+  const theme = useColorScheme();
+  const springAnimation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(springAnimation, {
+      toValue: 1,
+      useNativeDriver: true,
+      friction: 3
+    }).start();
+  }, []);
+
+  return (
+  	<Animated.Text
+      style={{
+        color: theme == "dark" ? "white" : "black",
+        fontSize: 28,
+        fontWeight: 'bold',
+        position: 'relative',
+        top: 120,
+        transform: [{ scale: springAnimation }],
+      }}
+    >
+      {footdle?.name}
+    </Animated.Text>
   );
 };
