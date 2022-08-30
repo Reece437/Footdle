@@ -211,7 +211,7 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
+    <View
       style={[
         darkTheme,
         styles.container,
@@ -264,6 +264,6 @@ export default function Home({ navigation }) {
         backgroundColor={"transparent"}
         translucent
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
