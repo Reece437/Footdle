@@ -7,36 +7,32 @@ import Home from "./screens/Home.tsx";
 import WelcomeScreen from "./screens/Welcome_Screen.tsx";
 import { TailwindProvider } from "tailwindcss-react-native";
 import * as SplashScreen from "expo-splash-screen";
+import { auth } from "./firebase";
 
 const Stack = createStackNavigator();
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [signedIn, setSignedIn] = useState();
-
-  console.log("signedIn: ", signedIn);
-
-  useEffect(() => {
-    AsyncStorage.getItem("signedIn").then((data) => {
-      data = JSON.parse(data);
-      if (data == null) {
-        data = false;
-        AsyncStorage.setItem("signedIn", JSON.stringify(data));
-      }
-      setSignedIn(data);
+  const [signedIn, setSignedIn] = useState()
+   useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        //AsyncStorage.setItem('signedIn', JSON.stringify(true));
+        setSignedIn(true);
+      } else setSignedIn(false);
     });
+    return unsubscribe;
   }, []);
-
+  
   useEffect(() => {
-    const stopSplashScreen = async () => {
-      if (signedIn !== undefined) {
-        console.log('signedIn: ', signedIn)
-        await SplashScreen.hideAsync();
-      }
-    };
-    stopSplashScreen();
-  }, [signedIn]);
+  	const setScreen = async() => {
+  		if (signedIn !== undefined) {
+  			await SplashScreen.hideAsync();
+  		}
+  	}
+  	setScreen();
+  }, [signedIn])
   
   if (signedIn == undefined) {
   	return null;

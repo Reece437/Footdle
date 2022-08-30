@@ -26,7 +26,7 @@ export default function WelcomeScreen({ navigation }) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        AsyncStorage.setItem('signedIn', JSON.stringify(true));
+        //AsyncStorage.setItem('signedIn', JSON.stringify(true));
         navigation.replace("Home");
       }
     });
