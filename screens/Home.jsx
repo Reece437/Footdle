@@ -213,13 +213,7 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <View
-      style={[
-        darkTheme,
-        styles.container,
-        { paddingTop: StatusBar.currentHeight },
-      ]}
-    >
+    <View className="flex-1 justify-center items-center pb-[10px] dark:bg-[#121212]">
       {playAgain ? <FootdleText footdle={footdle} /> : null}
       <SearchBar
         value={searchText}
@@ -235,7 +229,7 @@ export default function Home({ navigation }) {
       </SearchBar>
       <ScrollView
         containerStyle={{ flex: 1 }}
-        fadingEdgeLength={80}
+        fadingEdgeLength={100}
         style={{
           width: "100%",
           flexGrow: 0.6,

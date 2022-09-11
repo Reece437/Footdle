@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { auth } from "./firebase";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Settings from './screens/Settings';
+import {useColorScheme} from 'nativewind';
 
 
 const Stack = createStackNavigator();
@@ -38,7 +39,16 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [signedIn, setSignedIn] = useState();
+  const { colorScheme, setColorScheme } = useColorScheme();
+  
   useEffect(() => {
+    AsyncStorage.getItem('theme').then(theme => {
+    	if (theme == null) {
+    		theme = colorScheme;
+    	} else {
+    		setColorScheme(theme);
+    	}
+    });
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setSignedIn(true);

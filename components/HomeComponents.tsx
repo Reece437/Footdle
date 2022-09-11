@@ -5,7 +5,6 @@ import {
   ScrollView,
   Text,
   Image,
-  useColorScheme,
   TouchableHighlight,
   Animated,
   Easing,
@@ -14,6 +13,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { styles } from "../styles/HomeStyles";
 import { Overlay } from "react-native-elements";
 import { auth, db } from "../firebase";
+import {useColorScheme} from 'nativewind';
 
 //const AnimatedOverlay = Animated.createAnimatedComponent(Overlay);
 
@@ -42,21 +42,16 @@ interface SearchBarProps {
 }
 
 export const SearchBar = (props: SearchBarProps) => {
-  const theme = useColorScheme();
-  const darkTheme = theme == "dark" ? styles.searchBarDark : null;
-  const placeholderTextColor = theme == "dark" ? "#ffffff96" : null;
+  const {colorScheme} = useColorScheme();
+  const darkTheme = colorScheme == "dark" ? styles.searchBarDark : null;
+  const placeholderTextColor = colorScheme == "dark" ? "#ffffff96" : null;
 
   return (
-    <View
-      style={{
-        position: "relative",
-        top: "25%",
-      }}
-    >
+    <View className="relative top-[25%]">
       <TextInput
+        style={[styles.searchBar, darkTheme]}
         editable={props.editable}
         onChangeText={props.onTextChange}
-        style={[styles.searchBar, darkTheme]}
         placeholder={props.placeholder}
         placeholderTextColor={placeholderTextColor}
         value={props.value}
@@ -73,8 +68,8 @@ interface PlayerCardProps {
 }
 
 export const PlayerCard = (props: PlayerCardProps) => {
-  const theme = useColorScheme();
-  const containerStyle = theme == "dark" ? styles.playerCardDark : null;
+  const {colorScheme} = useColorScheme();
+  const containerStyle = colorScheme == "dark" ? styles.playerCardDark : null;
   let { onPress, playerInfo, searchText } = props;
   while (searchText.slice(-1) == " ") {
     searchText = searchText.slice(0, -1);
@@ -89,7 +84,7 @@ export const PlayerCard = (props: PlayerCardProps) => {
     .slice(1)
     .join(searchText.toUpperCase());
   let ButtonText = () => (
-    <Text style={{ color: theme == "dark" ? "white" : null }}>
+    <Text style={{ color: colorScheme == "dark" ? "white" : null }}>
       {playerInfo.name.split(searchText.toUpperCase())[0]}
       <Text style={{ fontWeight: "bold" }}>{searchText.toUpperCase()}</Text>
       {afterSearchText}
@@ -141,7 +136,7 @@ export const AllPlayerCards = (props: {
 };
 
 const Clue = ({ footdle, playerInfo, category, AnimationCallback }) => {
-  const theme = useColorScheme();
+  const {colorScheme} = useColorScheme();
   const opacity = useRef(new Animated.Value(0)).current;
   const offset = useRef(new Animated.Value(50)).current;
 
@@ -180,7 +175,7 @@ const Clue = ({ footdle, playerInfo, category, AnimationCallback }) => {
   }
 
   if (backgroundColor == null) {
-    backgroundColor = theme == "dark" ? "#424242" : "white";
+    backgroundColor = colorScheme == "dark" ? "#424242" : "white";
   }
 
   let extraText;
@@ -209,7 +204,7 @@ const Clue = ({ footdle, playerInfo, category, AnimationCallback }) => {
           style={{
             fontWeight: "bold",
             fontSize: 24,
-            color: theme == "dark" ? "white" : "black",
+            color: colorScheme == "dark" ? "white" : "black",
             textAlign: "center",
           }}
         >
@@ -221,7 +216,7 @@ const Clue = ({ footdle, playerInfo, category, AnimationCallback }) => {
         style={{
           marginLeft: category == "NAT" ? 10 : null,
           textAlign: "center",
-          color: "white",
+          color: colorScheme == "dark" ? "white" : "black",
           fontWeight: "bold",
           fontSize: 16,
         }}
@@ -233,8 +228,8 @@ const Clue = ({ footdle, playerInfo, category, AnimationCallback }) => {
 };
 
 export const GiveClues = (props) => {
-  const theme = useColorScheme();
-  const textColor = theme == "dark" ? "white" : "black";
+  const {colorScheme} = useColorScheme();
+  const textColor = colorScheme == "dark" ? "white" : "black";
   return (
     <>
       <Text
@@ -279,9 +274,9 @@ export const GiveClues = (props) => {
   );
 };
 export const Stats = (props) => {
-  const theme = useColorScheme();
-  const darkOverlay = theme == "dark" ? styles.overlayDark : null;
-  const textColor = theme == "dark" ? "white" : "black";
+  const {colorScheme} = useColorScheme();
+  const darkOverlay = colorScheme == "dark" ? styles.overlayDark : null;
+  const textColor = colorScheme == "dark" ? "white" : "black";
 
   const [data, setData] = useState();
 
@@ -437,14 +432,14 @@ export const Stats = (props) => {
 };
 
 export const PlayAgain = ({ onPress, style, textStyle }) => {
-  const theme = useColorScheme();
+  const {colorScheme} = useColorScheme();
   return (
     <TouchableHighlight
       underlayColor={"#2f9db898"}
       style={[
         styles.playAgainBtn,
         {
-          borderColor: theme == "dark" ? "white" : "black",
+          borderColor: colorScheme == "dark" ? "white" : "black",
         },
         style,
       ]}
@@ -468,7 +463,7 @@ export const PlayAgain = ({ onPress, style, textStyle }) => {
 };
 
 export const FootdleText = ({footdle}) => {
-  const theme = useColorScheme();
+  const {colorScheme} = useColorScheme();
   const springAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -482,7 +477,7 @@ export const FootdleText = ({footdle}) => {
   return (
   	<Animated.Text
       style={{
-        color: theme == "dark" ? "white" : "black",
+        color: colorScheme == "dark" ? "white" : "black",
         fontSize: 28,
         fontWeight: 'bold',
         position: 'relative',

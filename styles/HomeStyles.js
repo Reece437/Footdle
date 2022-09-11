@@ -1,15 +1,6 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom: 50,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  containerDark: {
-    backgroundColor: "#121212",
-  },
   searchBar: {
     width: 270,
     height: 50,
