@@ -21,6 +21,8 @@ import {
   FootdleText
 } from "../components/HomeComponents";
 
+
+
 export default function Home({ navigation }) {
   const [dbData, setDbData] = useState();
   const [footdle, setFootdle] = useState();
@@ -130,7 +132,7 @@ export default function Home({ navigation }) {
   const AnimationFinishedCallback = (playerInfo) => {
     console.log("called function");
     let result = checkGameEnd(footdle, playerInfo, guesses + 1);
-    if (typeof result == "boolean") {
+    if (typeof(result) == "boolean") {
       db.collection("users")
         .doc(auth.currentUser?.uid)
         .get()
@@ -185,10 +187,10 @@ export default function Home({ navigation }) {
   };
 
   const checkGameEnd = (
-    footdle: object,
-    playerInfo: object,
-    guesses: number
-  ): boolean | null => {
+    footdle,
+    playerInfo,
+    guesses
+  ) => {
     if (footdle.name == playerInfo.name) {
       return true;
     } else if (guesses > 8) {

@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Home from "./screens/Home.tsx";
-import WelcomeScreen from "./screens/Welcome_Screen.tsx";
-import { TailwindProvider } from "tailwindcss-react-native";
+import Home from "./screens/Home";
+import WelcomeScreen from "./screens/Welcome_Screen";
 import * as SplashScreen from "expo-splash-screen";
 import { auth } from "./firebase";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -63,7 +62,6 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <TailwindProvider>
         <Stack.Navigator initialRouteName={signedIn ? "Home" : "WelcomeScreen"}>
           <Stack.Screen
             component={HomeScreen}
@@ -76,7 +74,6 @@ export default function App() {
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
-      </TailwindProvider>
     </NavigationContainer>
   );
 }
