@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
-import {View, Text, ScrollView, TouchableOpacity, Animated, AsyncStorage} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Animated, AsyncStorage, Switch} from 'react-native';
 import {useColorScheme} from 'nativewind';
 
 export default function Settings({navigation}) {

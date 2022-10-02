@@ -2,7 +2,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  useColorScheme,
   KeyboardAvoidingView,
   TextInput,
   ScrollView,
@@ -20,7 +19,7 @@ import {
   Stats,
   FootdleText
 } from "../components/HomeComponents";
-
+import {useColorScheme} from 'nativewind';
 
 
 export default function Home({ navigation }) {
@@ -34,10 +33,9 @@ export default function Home({ navigation }) {
   const [visible, setVisible] = useState(false);
   const [playAgain, setPlayAgain] = useState(false);
 
-  //const AnimatedStats = Animated.createAnimatedComponent(Stats);
   const overlayAnimation = useRef(new Animated.Value(0.5)).current;
 
-  const theme = useColorScheme();
+  const {colorScheme} = useColorScheme();
   
   useEffect(() => {
   	playAgain ? setTimeout(() => setVisible(true), 1000) : null;
@@ -60,8 +58,6 @@ export default function Home({ navigation }) {
     setSearchPlayers(sortPlayerData(searchText));
   }, [searchText, dbData]);
 
-  // Styles
-  const darkTheme = theme == "dark" ? styles.containerDark : null;
 
   const generateFootdle = (doc) => {
     let player;
@@ -256,7 +252,7 @@ export default function Home({ navigation }) {
         playAgain={restartGame}
       />
       <StatusBar
-        barStyle={theme == "dark" ? "light-content" : "dark-content"}
+        barStyle={colorScheme == "dark" ? "light-content" : "dark-content"}
         backgroundColor={"transparent"}
         translucent
       />
