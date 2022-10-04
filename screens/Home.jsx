@@ -3,13 +3,11 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
-  TextInput,
   ScrollView,
   StatusBar,
   Animated,
 } from "react-native";
 import { auth, db } from "../firebase.js";
-import { styles } from "../styles/HomeStyles";
 import { useState, useEffect, useRef } from "react";
 import {
   SearchBar,
@@ -216,6 +214,7 @@ export default function Home({ navigation }) {
         placeholder={`Guess ${guesses} of 8`}
         onTextChange={(text) => setSearchText(text)}
         editable={editable}
+        players={searchPlayers}
       >
         <AllPlayerCards
           searchText={searchText}

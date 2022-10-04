@@ -15,7 +15,7 @@ export default function Settings({navigation}) {
 	return (
 		<View className="flex-1 justify-center items-start p-4 dark:bg-[#121212]">
 			<TouchableOpacity onPress={changeColorScheme}>
-				<Text>Change theme</Text>
+				<Text className="text-red-500">Change theme</Text>
 			</TouchableOpacity>
 		</View>
 	);

@@ -39,17 +39,24 @@ interface SearchBarProps {
   value: string;
   onTextChange?: () => void;
   placeholder: string;
+  players: any;
 }
 
 export const SearchBar = (props: SearchBarProps) => {
   const {colorScheme} = useColorScheme();
   const darkTheme = colorScheme == "dark" ? styles.searchBarDark : null;
   const placeholderTextColor = colorScheme == "dark" ? "#ffffff96" : null;
-
+  let adaptiveStyle;
+  try {
+    adaptiveStyle = props.players.length != 0 ? {borderBottomLeftRadius: 0, borderBottomRightRadius: 0} : null;
+  } catch(err) {
+    adaptiveStyle = null;
+  }
+  
   return (
     <View className="relative top-[25%]">
       <TextInput
-        style={[styles.searchBar, darkTheme]}
+        style={[styles.searchBar, darkTheme, adaptiveStyle]}
         editable={props.editable}
         onChangeText={props.onTextChange}
         placeholder={props.placeholder}
@@ -65,6 +72,7 @@ interface PlayerCardProps {
   onPress: () => void;
   playerInfo: object[];
   searchText: string;
+  style: object;
 }
 
 export const PlayerCard = (props: PlayerCardProps) => {
@@ -92,7 +100,7 @@ export const PlayerCard = (props: PlayerCardProps) => {
   );
   return (
     <TouchableOpacity
-      style={[styles.playerCard, containerStyle]}
+      style={[styles.playerCard, containerStyle, props.style]}
       onPress={() => {
         onPress(playerInfo);
       }}
@@ -119,6 +127,7 @@ export const AllPlayerCards = (props: {
         searchText={searchText}
         playerInfo={doc[i]}
         key={i}
+        style={i == doc.length - 1 ? {borderBottomRightRadius: 10, borderBottomLeftRadius: 10}: null}
       />
     );
   }
